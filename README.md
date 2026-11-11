@@ -1,54 +1,81 @@
-# React + TypeScript + Vite
+# Talk
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application de chat en temps réel : salons publics, conversations privées et authentification par e-mail, construite avec React, TypeScript et Supabase.
 
-Currently, two official plugins are available:
+**Démo en ligne :** <https://talk-six-lyart.vercel.app>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Fonctionnalités
 
-## Expanding the ESLint configuration
+- **Authentification** : inscription, connexion et déconnexion par e-mail et mot de passe (Supabase Auth).
+- **Mot de passe oublié** : envoi d'un lien de réinitialisation par e-mail, puis page dédiée pour choisir un nouveau mot de passe.
+- **Salons** : liste des salons existants et création d'un nouveau salon.
+- **Conversations privées** : liste des utilisateurs pour démarrer une discussion à deux.
+- **Messages en temps réel** : les nouveaux messages s'affichent sans recharger la page, grâce aux abonnements Supabase Realtime.
+- **Interface responsive** : navigation adaptée au mobile.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Stack technique
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+| Rôle | Outil |
+|---|---|
+| Interface | React 19, TypeScript, CSS Modules |
+| Build | Vite 6 |
+| Routage | React Router 7 |
+| Données serveur | TanStack Query (React Query) |
+| État global | Zustand (utilisateur connecté, discussion active) |
+| Formulaires | React Hook Form |
+| Notifications | React Toastify |
+| Backend | Supabase (Auth, PostgreSQL, Realtime) |
+| Intégration continue | GitHub Actions (lint et build) |
+| Hébergement | Vercel |
+
+## Installation
+
+Prérequis : Node.js (version LTS) et un projet [Supabase](https://supabase.com).
+
+```bash
+git clone https://github.com/Slim-coder20/talk-chat.git
+cd talk-chat
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Crée un fichier `.env.local` à la racine avec les identifiants de ton projet Supabase :
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+VITE_SUPABASE_URL=https://ton-projet.supabase.co
+VITE_SUPABASE_ANON_KEY=ta-cle-anon
 ```
+
+Le projet Supabase doit contenir les tables `rooms`, `messages` et `profiles`, avec Realtime activé sur `messages`.
+
+```bash
+npm run dev
+```
+
+## Scripts
+
+| Commande | Effet |
+|---|---|
+| `npm run dev` | Lance le serveur de développement |
+| `npm run build` | Vérifie les types puis construit l'application |
+| `npm run lint` | Analyse le code avec ESLint |
+| `npm run preview` | Sert la version construite en local |
+
+## Structure
+
+```text
+src/
+├── App.tsx              # Synchronise la session Supabase et le store
+├── supabaseClient.ts    # Client Supabase
+├── store/chatStore.ts   # Store Zustand : utilisateur et discussion active
+├── components/
+│   ├── auth/            # Connexion, inscription, mot de passe oublié
+│   ├── chat/            # Affichage et envoi des messages
+│   └── Dashboard.tsx    # Routes de l'espace connecté
+└── pages/               # Salons, création de salon, conversations, réinitialisation
+```
+
+La logique d'authentification est détaillée dans [doc/gestion-utilisateur.md](doc/gestion-utilisateur.md).
+
+## Auteur
+
+Slim Abida — [portfolio](https://www.slim-abida.dev) · [LinkedIn](https://www.linkedin.com/in/slim-abida-50161a35b/)
